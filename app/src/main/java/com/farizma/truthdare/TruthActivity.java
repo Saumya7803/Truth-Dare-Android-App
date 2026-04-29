@@ -11,7 +11,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,18 +23,23 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class TruthActivity extends AppCompatActivity {
 
-    private ArrayList<TruthItem> truthList;
+    private ArrayList<TruthItem> questionPool;
+    private ArrayList<TruthItem> displayList;
 
     private Toolbar toolbar;
     private RecyclerView recyclerView;
+    private Button nextButton;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     Gson gson = new Gson();
+    private final Random random = new Random();
+    private int lastShownIndex = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +52,37 @@ public class TruthActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        truthList = new ArrayList<>();
+        questionPool = new ArrayList<>();
+        displayList = new ArrayList<>();
 
         recyclerViewConfig();
         populateDefaultData();
         if(sharedPreferences.contains("UserTruths"))
             populateUserData(sharedPreferences.getString("UserTruths", null));
+
+        nextButton = findViewById(R.id.nextButton);
+        nextButton.setText("Next Truth");
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showRandomQuestion();
+            }
+        });
+        showRandomQuestion();
     }
 
     public void populateDefaultData() {
         Values values = new Values();
         for(int i=0; i<values.truths.length; i++)
-            truthList.add(new TruthItem(values.truths[i]));
+            questionPool.add(new TruthItem(values.truths[i]));
     }
 
     public void populateUserData(String jsonTruths) {
         String[] truths = gson.fromJson(jsonTruths, String[].class);
+        if (truths == null) return;
+
         for(int i=0; i<truths.length; i++)
-                truthList.add(new TruthItem(truths[i]));
+            questionPool.add(new TruthItem(truths[i]));
     }
 
     public void recyclerViewConfig() {
@@ -76,10 +93,26 @@ public class TruthActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
-        adapter = new TruthAdapter(truthList);
+        adapter = new TruthAdapter(displayList);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
+
+    public void showRandomQuestion() {
+        if (questionPool.isEmpty()) return;
+
+        int randomIndex = random.nextInt(questionPool.size());
+        if (questionPool.size() > 1) {
+            while (randomIndex == lastShownIndex) {
+                randomIndex = random.nextInt(questionPool.size());
+            }
+        }
+
+        lastShownIndex = randomIndex;
+        displayList.clear();
+        displayList.add(questionPool.get(randomIndex));
+        adapter.notifyDataSetChanged();
     }
 
     public void showDialog() {
@@ -102,7 +135,7 @@ public class TruthActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Empty Text", Toast.LENGTH_LONG).show();
                 else{
                     updateUserData(mText);
-                    adapter.notifyDataSetChanged();
+                    showRandomQuestion();
                     Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
@@ -131,7 +164,7 @@ public class TruthActivity extends AppCompatActivity {
         textList.add(string);
         editor.putString("UserTruths", gson.toJson(textList));
         editor.apply();
-        truthList.add(new TruthItem(string));
+        questionPool.add(new TruthItem(string));
     }
 
     @Override
