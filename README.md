@@ -17,7 +17,11 @@ The selected player gets a random truth or dare prompt.
 
 ## Demo Preview
 
-![Truth Dare Demo](src/video.gif)
+<video src="https://github.com/Saumya7803/Truth-Dare-Android-App/raw/main/demo-video/truth-dare-gameplay-demo.mp4" controls width="320">
+  Your browser does not support the video tag.
+</video>
+
+If preview does not load, open directly: [Play Demo Video](demo-video/truth-dare-gameplay-demo.mp4)
 
 ## Features
 
@@ -41,7 +45,6 @@ The selected player gets a random truth or dare prompt.
 - `app/src/main/java/com/farizma/truthdare` - app source code
 - `app/src/main/res` - layouts, drawables, strings, assets
 - `demo-video/truth-dare-gameplay-demo.mp4` - full demo video
-- `src/video.gif` - README demo preview
 
 ## Getting Started
 
