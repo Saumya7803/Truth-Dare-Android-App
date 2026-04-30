@@ -17,13 +17,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17 (SDK tools)
+      - name: Set up JDK 8
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "8"
+          cache: gradle
 
-      - name: Configure Android SDK
+      - name: Export Android SDK vars
         run: |
           SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/Android/Sdk}}"
           if [ ! -d "$SDK_ROOT" ]; then
@@ -37,23 +38,6 @@ jobs:
           echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
           echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
           echo "$SDK_ROOT/platform-tools" >> "$GITHUB_PATH"
-
-          SDKMANAGER="$(find "$SDK_ROOT" -type f -name sdkmanager | head -n 1)"
-          if [ -z "$SDKMANAGER" ]; then
-            echo "sdkmanager binary not found in $SDK_ROOT"
-            exit 1
-          fi
-
-          chmod +x "$SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses > /dev/null || true
-          "$SDKMANAGER" --install "platform-tools" "platforms;android-29" "build-tools;29.0.3"
-
-      - name: Set up JDK 8 (Gradle build)
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "8"
-          cache: gradle
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
