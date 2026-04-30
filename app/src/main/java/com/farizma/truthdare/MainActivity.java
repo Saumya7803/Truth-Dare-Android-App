@@ -48,8 +48,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        truthBtn.setEnabled(false);
-        dareBtn.setEnabled(false);
+        truthBtn.setEnabled(true);
+        dareBtn.setEnabled(true);
         btn.setEnabled(true);
     }
 
@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
                 mp = MediaPlayer.create(MainActivity.this, R.raw.audio);
                 mp.start();
                 btn.setEnabled(false);
+                truthBtn.setEnabled(false);
+                dareBtn.setEnabled(false);
             }
 
             @Override
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 mp.stop();
                 mp.release();
                 mp = null;
+                btn.setEnabled(true);
                 truthBtn.setEnabled(true);
                 dareBtn.setEnabled(true);
             }

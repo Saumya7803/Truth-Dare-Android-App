@@ -2,8 +2,7 @@ package com.farizma.truthdare;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,29 +16,23 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.widget.Toolbar;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
 
 public class TruthActivity extends AppCompatActivity {
 
-    private ArrayList<TruthItem> questionPool;
-    private ArrayList<TruthItem> displayList;
-
+    private final ArrayList<String> questionPool = new ArrayList<>();
     private Toolbar toolbar;
-    private RecyclerView recyclerView;
+    private TextView questionText;
     private Button nextButton;
-    private RecyclerView.Adapter adapter;
-    private RecyclerView.LayoutManager layoutManager;
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-    Gson gson = new Gson();
-    private final Random random = new Random();
-    private int lastShownIndex = -1;
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+    private final Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,67 +45,40 @@ public class TruthActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        questionPool = new ArrayList<>();
-        displayList = new ArrayList<>();
-
-        recyclerViewConfig();
         populateDefaultData();
-        if(sharedPreferences.contains("UserTruths"))
+        if (sharedPreferences.contains("UserTruths")) {
             populateUserData(sharedPreferences.getString("UserTruths", null));
+        }
 
+        questionText = findViewById(R.id.questionText);
         nextButton = findViewById(R.id.nextButton);
-        nextButton.setText("Next Truth");
+        nextButton.setText("NEXT");
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showRandomQuestion();
+                finish();
             }
         });
+
         showRandomQuestion();
     }
 
     public void populateDefaultData() {
         Values values = new Values();
-        for(int i=0; i<values.truths.length; i++)
-            questionPool.add(new TruthItem(values.truths[i]));
+        questionPool.addAll(Arrays.asList(values.truths));
     }
 
     public void populateUserData(String jsonTruths) {
         String[] truths = gson.fromJson(jsonTruths, String[].class);
         if (truths == null) return;
 
-        for(int i=0; i<truths.length; i++)
-            questionPool.add(new TruthItem(truths[i]));
-    }
-
-    public void recyclerViewConfig() {
-        // config for RV
-        recyclerView = findViewById(R.id.recyclerView);
-
-        //performance
-        recyclerView.setHasFixedSize(true);
-
-        layoutManager = new LinearLayoutManager(this);
-        adapter = new TruthAdapter(displayList);
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+        questionPool.addAll(Arrays.asList(truths));
     }
 
     public void showRandomQuestion() {
-        if (questionPool.isEmpty()) return;
-
-        int randomIndex = random.nextInt(questionPool.size());
-        if (questionPool.size() > 1) {
-            while (randomIndex == lastShownIndex) {
-                randomIndex = random.nextInt(questionPool.size());
-            }
-        }
-
-        lastShownIndex = randomIndex;
-        displayList.clear();
-        displayList.add(questionPool.get(randomIndex));
-        adapter.notifyDataSetChanged();
+        questionText.setText(
+                QuestionSessionManager.nextQuestion(QuestionSessionManager.MODE_TRUTH, questionPool)
+        );
     }
 
     public void showDialog() {
@@ -135,7 +101,6 @@ public class TruthActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Empty Text", Toast.LENGTH_LONG).show();
                 else{
                     updateUserData(mText);
-                    showRandomQuestion();
                     Toast.makeText(getApplicationContext(), "Successfully Added", Toast.LENGTH_SHORT).show();
                 }
                 dialog.dismiss();
@@ -164,7 +129,7 @@ public class TruthActivity extends AppCompatActivity {
         textList.add(string);
         editor.putString("UserTruths", gson.toJson(textList));
         editor.apply();
-        questionPool.add(new TruthItem(string));
+        questionPool.add(string);
     }
 
     @Override

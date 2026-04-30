@@ -12,3 +12,16 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Android/Gradle outputs
+**/build/
+app/release/
+app/debug/
+*.apk
+*.aab
+
+# Local machine/editor files
+.idea/
+*.log
+*.tmp
+Thumbs.db
