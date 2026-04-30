@@ -15,12 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 8
+      - name: Set up JDK 17 (SDK tools)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "8"
-          cache: gradle
+          java-version: "17"
 
       - name: Configure Android SDK
         run: |
@@ -46,6 +45,13 @@ jobs:
           chmod +x "$SDKMANAGER"
           yes | "$SDKMANAGER" --licenses > /dev/null || true
           "$SDKMANAGER" --install "platform-tools" "platforms;android-29" "build-tools;29.0.3"
+
+      - name: Set up JDK 8 (Gradle build)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: gradle
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
