@@ -11,7 +11,11 @@ The selected player gets a random truth or dare prompt.
 - Upgraded question bank with office-friendly adult group content
 - Refreshed screenshots and gameplay demo video
 
-## Demo
+## Demo Video
+
+- Watch full gameplay demo: [truth-dare-gameplay-demo.mp4](demo-video/truth-dare-gameplay-demo.mp4)
+
+## Demo Preview
 
 ![Truth Dare Demo](src/video.gif)
 
@@ -36,7 +40,8 @@ The selected player gets a random truth or dare prompt.
 
 - `app/src/main/java/com/farizma/truthdare` - app source code
 - `app/src/main/res` - layouts, drawables, strings, assets
-- `src/video.gif` - demo preview for README
+- `demo-video/truth-dare-gameplay-demo.mp4` - full demo video
+- `src/video.gif` - README demo preview
 
 ## Getting Started
 
@@ -83,3 +88,4 @@ This triggers the release workflow and uploads the release APK to GitHub Release
 ## License
 
 This project is licensed under the MIT License. See `LICENSE` for details.
+
