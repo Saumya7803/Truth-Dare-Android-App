@@ -13,15 +13,12 @@ The selected player gets a random truth or dare prompt.
 
 ## Demo Video
 
-- Watch full gameplay demo: [truth-dare-gameplay-demo.mp4](demo-video/truth-dare-gameplay-demo.mp4)
+- Watch full gameplay demo: [Play MP4 (Raw)](https://raw.githubusercontent.com/Saumya7803/Truth-Dare-Android-App/main/demo-video/truth-dare-gameplay-demo.mp4)
+- Alternate link: [Repository file](demo-video/truth-dare-gameplay-demo.mp4)
 
 ## Demo Preview
 
-<video src="https://github.com/Saumya7803/Truth-Dare-Android-App/raw/main/demo-video/truth-dare-gameplay-demo.mp4" controls width="320">
-  Your browser does not support the video tag.
-</video>
-
-If preview does not load, open directly: [Play Demo Video](demo-video/truth-dare-gameplay-demo.mp4)
+![Truth Dare Demo](src/video.gif)
 
 ## Features
 
